@@ -1,16 +1,45 @@
 body {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.nav-wrapper {
+  margin-left: 20px;
 }
 
 main {
-    flex: 1 0 auto;
+  flex: 1 0 auto;
+}
+
+.promo {
+  width:100%
+}
+.promo i {
+  margin:40px 0;
+  color:#ee6e73;
+  font-size:7rem;
+  display:block
+}
+
+.promo-caption {
+  font-size:1.7rem;
+  font-weight:500;
+  margin-top:5px;
+  margin-bottom:0;
+  opacity: .7;
+}
+
+.light {
+  font-size:1.7rem;
+  font-weight:500;
+  margin-top:5px;
+  margin-bottom:0
 }
 
 #chat-messages {
-    min-height: 10vh;
-    height: 60vh;
-    width: 100%;
-    overflow-y: scroll;
+  min-height: 10vh;
+  height: 60vh;
+  width: 100%;
+  overflow-y: scroll;
 }

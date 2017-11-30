@@ -20,14 +20,14 @@ var upgrader = websocket.Upgrader{
 
 // Define our message object
 type Message struct {
-	Temperature string `json:"temperature_C"`
-	Pressure    string `json:"pressure_KPa"`
-	Humidity    string `json:"humidity"`
+	Temperature float64 `json:"temperature_C"`
+	Pressure    float64 `json:"pressure_KPa"`
+	Humidity    float64 `json:"humidity"`
 }
 
 func main() {
 	// Create a simple file server
-	fs := http.FileServer(http.Dir("../public"))
+	fs := http.FileServer(http.Dir("./public"))
 	http.Handle("/", fs)
 
 	// Configure websocket route
@@ -97,9 +97,10 @@ func handleSendingPipeline(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, "Error reading request body",
 				http.StatusInternalServerError)
+			fmt.Print(err)
 		}
 		defer r.Body.Close()
-
+		fmt.Print(message)
 		broadcast <- message
 
 		fmt.Fprint(w, "POST done")
