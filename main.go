@@ -1,10 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/websocket"
+	"encoding/json"
 )
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
@@ -19,9 +20,9 @@ var upgrader = websocket.Upgrader{
 
 // Define our message object
 type Message struct {
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Message  string `json:"message"`
+	Temperature string `json:"temperature_C"`
+	Pressure    string `json:"pressure_KPa"`
+	Humidity    string `json:"humidity"`
 }
 
 func main() {
@@ -31,6 +32,9 @@ func main() {
 
 	// Configure websocket route
 	http.HandleFunc("/ws", handleConnections)
+
+	// Configure HTTP Connections
+	http.HandleFunc("/sendingPipeline", handleSendingPipeline)
 
 	// Start listening for incoming chat messages
 	go handleMessages()
@@ -82,5 +86,24 @@ func handleMessages() {
 				delete(clients, client)
 			}
 		}
+	}
+}
+
+func handleSendingPipeline(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		decoder := json.NewDecoder(r.Body)
+		var message Message
+		err := decoder.Decode(&message)
+		if err != nil {
+			http.Error(w, "Error reading request body",
+				http.StatusInternalServerError)
+		}
+		defer r.Body.Close()
+
+		broadcast <- message
+
+		fmt.Fprint(w, "POST done")
+	} else {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
 }
